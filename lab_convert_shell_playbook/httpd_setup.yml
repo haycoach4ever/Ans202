@@ -1,0 +1,7 @@
+---
+- name: Start and enable a service
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: 

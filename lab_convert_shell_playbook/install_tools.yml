@@ -1,0 +1,13 @@
+---
+- name: Installing a packages with DNF
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+   - name: Installing packages
+     ansible.builtin.dnf:
+       name:
+         - wget
+         - curl
+         - lsof
+       state: latest

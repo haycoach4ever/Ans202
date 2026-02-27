@@ -1,0 +1,24 @@
+---
+- name: Create user and file with permissions
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Create new user
+      user:
+        name: marge
+        shell: /bin/bash
+
+    - name: Welcome message
+      file:
+        path: "/home/marge/welcome.txt"
+        owner: marge
+        group: marge
+        mode: 0755
+        state: touch
+
+    - name: Inssert message
+      lineinfile:
+        path: /home/marge/welcome.txt
+        line: Welcome to Springfield Marge!"
+        create: yes
