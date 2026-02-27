@@ -1,0 +1,25 @@
+---
+- name: Simulate an SELinux context mismatch (no denial on this system)
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Create a simple test script
+      copy:
+        dest: /tmp/selinux_test.sh
+        content: |
+          #!/bin/bash
+          echo "Running under an unsafe SELinux context"
+        mode: '0755'
+
+    - name: Change SELinux label to httpd_sys_content_t (normally non-executable)
+      command: chcon -t httpd_sys_content_t /tmp/selinux_test.sh
+
+    - name: Attempt to run the mislabeled script
+      shell: /tmp/selinux_test.sh
+      register: run_result
+      ignore_errors: yes
+
+    - name: Show output (this would normally be denied on a stricter system)
+      debug:
+        var: run_result.stdout

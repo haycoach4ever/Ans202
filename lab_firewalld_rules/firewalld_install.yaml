@@ -1,0 +1,15 @@
+- name: Install and start firewalld
+  hosts: rhel-2
+  become: yes
+
+  tasks:
+    - name: Install firewalld
+      dnf:
+        name: firewalld
+        state: present
+
+    - name: Enable and start firewalld
+      systemd:
+        name: firewalld
+        state: started
+        enabled: true

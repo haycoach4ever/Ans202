@@ -1,0 +1,13 @@
+---
+- name: Open firewall port permanently
+  hosts: rhel-2
+  become: yes
+
+  tasks:
+    - name: Open 9090/tcp permanently
+      firewalld:
+        port: 9090/tcp
+        permanent: yes
+        state: enabled
+        immediate: yes
+        zone: public

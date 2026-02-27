@@ -1,0 +1,24 @@
+---
+- name: View and analyze SELinux audit logs
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Display last 10 AVC (access denied) logs
+      shell: ausearch -m avc -ts recent | tail -n 10
+      register: avc_logs
+      changed_when: false
+
+    - name: Show AVC log output
+      debug:
+        var: avc_logs.stdout_lines
+
+    - name: Use audit2why to explain denial (if available)
+      shell: ausearch -m avc -ts recent | audit2why
+      register: audit2why_output
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Display explanation from audit2why
+      debug:
+        var: audit2why_output.stdout

@@ -1,0 +1,18 @@
+---
+- name: Remove temporary firewall rule
+  hosts: rhel-2
+  become: yes
+
+  tasks:
+    - name: Ensure python3-firewall is installed
+      package:
+        name: python3-firewall
+        state: present
+
+    - name: Remove 9090/tcp from runtime and permanent config
+      firewalld:
+        port: 9090/tcp
+        state: disabled
+        permanent: yes
+        immediate: yes
+        zone: public

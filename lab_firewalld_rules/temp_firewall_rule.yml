@@ -1,0 +1,19 @@
+---
+- name: Open firewall port temporarily
+  hosts: rhel-2
+  become: yes
+
+  tasks:
+
+    - name: Ensure python3-firewall is installed
+      package:
+        name: python3-firewall
+        state: present
+
+    - name: Open 9090/tcp temporarily
+      firewalld:
+        port: 9090/tcp
+        permanent: no
+        state: enabled
+        immediate: yes
+        zone: public

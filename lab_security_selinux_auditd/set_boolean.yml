@@ -1,0 +1,21 @@
+---
+- name: Enable SELinux boolean only if it's not already enabled
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Get current value of httpd_can_network_connect
+      shell: getsebool httpd_can_network_connect
+      register: current_bool
+      changed_when: false
+
+    - name: Show current state
+      debug:
+        var: current_bool.stdout
+
+    - name: Enable boolean if currently off
+      seboolean:
+        name: httpd_can_network_connect
+        state: true
+        persistent: yes
+      when: "'off' in current_bool.stdout"

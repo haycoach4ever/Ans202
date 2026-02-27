@@ -1,0 +1,17 @@
+---
+- name: Revert httpd_can_network_connect to disabled
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Get current boolean setting
+      shell: getsebool httpd_can_network_connect
+      register: current_bool
+      changed_when: false
+
+    - name: Disable boolean if currently on
+      seboolean:
+        name: httpd_can_network_connect
+        state: false
+        persistent: yes
+      when: "'on' in current_bool.stdout"

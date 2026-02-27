@@ -1,0 +1,10 @@
+---
+- name: Install vsftpd
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Ensure vsftpd is installed
+      ansible.builtin.dnf:
+        name: vsftpd
+        state: present

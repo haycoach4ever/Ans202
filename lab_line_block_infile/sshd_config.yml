@@ -1,0 +1,12 @@
+---
+- name: Set PermitRootLogin to no
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Update sshd_config safely
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        backup: yes
