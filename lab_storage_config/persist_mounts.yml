@@ -1,0 +1,25 @@
+---
+- name: Persist mounts to /etc/fstab
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Add /mnt/data1 to fstab
+      mount:
+        path: /mnt/data1
+        src: /dev/sdb1
+        fstype: xfs
+        opts: defaults
+        state: mounted
+        dump: 0
+        passno: 2
+
+    - name: Add /mnt/data2 to fstab
+      mount:
+        path: /mnt/data2
+        src: /dev/sdc1
+        fstype: xfs
+        opts: defaults
+        state: mounted
+        dump: 0
+        passno: 2

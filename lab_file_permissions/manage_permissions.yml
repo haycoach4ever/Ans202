@@ -1,0 +1,64 @@
+---
+- name: Set ownership and permissions with file and copy
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    # Ensure the 'bart' group exists before assigning it to a user
+    - name: Ensure group bart exists
+      group:
+        name: bart
+        state: present
+
+    # Create a user named 'bart' and assign them to the 'bart' group
+    - name: Ensure user bart exists and belongs to bart group
+      user:
+        name: bart
+        group: bart
+        state: present
+
+    # Create the base directory with root ownership and 750 permissions (rwxr-x---)
+    - name: Create base directory /opt/simpsons
+      file:
+        path: /opt/simpsons
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Create an empty file owned by bart, readable by group, not world-accessible
+    - name: Create an empty file with ownership and mode
+      file:
+        path: /opt/simpsons/bart.txt
+        state: touch
+        owner: bart
+        group: bart
+        mode: '0644'
+
+    # Use the copy module to deploy a file into bart's home directory
+    - name: Copy welcome.txt to bart's home with metadata
+      copy:
+        src: welcome.txt
+        dest: /home/bart/welcome.txt
+        owner: bart
+        group: bart
+        mode: '0644'
+
+    # Immediately change permissions and group of the copied file for added control
+    - name: Modify permissions and group on copied file
+      file:
+        path: /home/bart/welcome.txt
+        mode: '0644'        # Make it read/write for bart only
+        group: root         # Change group ownership to root
+
+    # Create two subdirectories inside /opt/simpsons with different owners
+    - name: Create nested directories with specific owners
+      file:
+        path: "/opt/simpsons/{{ item.name }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.owner }}"
+        mode: '0755'        # rwxr-x---
+      loop:
+        - { name: 'logs', owner: 'root' }   # Owned by root
+        - { name: 'bart', owner: 'bart' }   # Owned by bart

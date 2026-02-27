@@ -1,0 +1,18 @@
+---
+- name: Check and install vsftpd based on shell output
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    # Use shell to check if vsftpd is installed (non-fatal if missing)
+    - name: Check if vsftpd is installed (non-fatal)
+      shell: which vsftpd
+      register: vsftpd_check
+      ignore_errors: true # if this task errors, it won't end the play
+
+    # Conditionally install vsftpd if not found
+    - name: Install vsftpd only if it's not installed
+      dnf:
+        name: vsftpd
+        state: present
+      when: vsftpd_check.rc != 0 # this is the variable registered in the previous task

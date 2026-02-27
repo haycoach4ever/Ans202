@@ -1,0 +1,23 @@
+---
+- name: Create users with primary groups
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Create user bart with primary group springfield
+      user:
+        name: bart
+        group: springfield
+        state: present
+
+    - name: Create user lisa with primary group springfield
+      user:
+        name: lisa
+        group: springfield
+        state: present
+
+    - name: Create user milhouse with primary group nuclearplant
+      user:
+        name: milhouse
+        group: nuclearplant
+#        state: present

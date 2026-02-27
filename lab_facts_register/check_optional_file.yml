@@ -1,0 +1,15 @@
+---
+- name: Safely check optional file and show contents if present
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Check for custom file (may not exist)
+      shell: cat /etc/something-that-might-not-be-there
+      register: file_check
+      ignore_errors: true
+      failed_when: false
+
+    - name: Show file contents or error message
+      debug:
+        msg: "{{ file_check.stdout | default('File missing or unreadable') }}"

@@ -1,0 +1,15 @@
+---
+- name: Create groups
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Create springfield group
+      group:
+        name: springfield
+        state: present
+
+    - name: Create nuclearplant group
+      group:
+        name: nuclearplant
+        state: present

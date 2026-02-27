@@ -1,0 +1,15 @@
+---
+- name: Register and display kernel version
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    # Run uname -r to get kernel version
+    - name: Check current kernel version
+      command: uname -r
+      register: kernel_version
+
+    # Show the captured version
+    - name: Show kernel version
+      debug:
+        var: kernel_version.stdout

@@ -1,0 +1,49 @@
+---
+- name: Undo lab storage configuration
+  hosts: rhel_nodes
+  become: yes
+  tasks:
+
+    - name: Unmount /mnt/data1 if mounted
+      mount:
+        path: /mnt/data1
+        state: unmounted
+
+    - name: Unmount /mnt/data2 if mounted
+      mount:
+        path: /mnt/data2
+        state: unmounted
+
+    - name: Remove /mnt/data1 directory
+      file:
+        path: /mnt/data1
+        state: absent
+
+    - name: Remove /mnt/data2 directory
+      file:
+        path: /mnt/data2
+        state: absent
+
+    - name: Remove /mnt/data1 from /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        state: absent
+        regexp: '^/dev/sdb1\s+/mnt/data1\s+'
+
+    - name: Remove /mnt/data2 from /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        state: absent
+        regexp: '^/dev/sdc1\s+/mnt/data2\s+'
+
+    - name: Zap partition table on /dev/sdb
+      command: "wipefs -a /dev/sdb"
+      ignore_errors: true
+
+    - name: Zap partition table on /dev/sdc
+      command: "wipefs -a /dev/sdc"
+      ignore_errors: true
+
+    - name: Reload partition table (just in case)
+      command: partprobe
+      ignore_errors: true

@@ -1,0 +1,65 @@
+---
+- name: Manage file content using copy, archive, and unarchive
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Copy a simple README to /tmp
+      copy:
+        content: |
+          This is a test README for Ansible archive lab.
+          It will be delivered to every managed node.
+        dest: /tmp/README.txt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create target directory to archive
+      file:
+        path: /tmp/cartoon_chars
+        state: directory
+
+    - name: Create character files inside the cartoon_chars directory
+      copy:
+        dest: "/tmp/cartoon_chars/{{ item }}"
+        content: "This is the {{ item }} file."
+      loop:
+        - bart.txt
+        - lisa.txt
+        - maggie.txt
+
+    - name: Create a tar archive of the cartoon_chars directory
+      archive:
+        path: /tmp/cartoon_chars
+        dest: /tmp/cartoon_chars.tar.gz
+        format: gz
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Check if extraction directory exists
+      stat:
+        path: /opt/cartoon_chars
+      register: extract_dir
+
+    - name: Ensure /opt exists before extracting
+      file:
+        path: /opt
+        state: directory
+
+    - name: Extract archive to /opt/cartoon_chars (only if not already extracted)
+      unarchive:
+        src: /tmp/cartoon_chars.tar.gz
+        dest: /opt/
+        remote_src: yes
+        creates: /opt/cartoon_chars
+      when: not extract_dir.stat.exists
+
+    - name: Confirm extracted files exist
+      shell: ls -1 /opt/cartoon_chars
+      register: unarchived_files
+      changed_when: false
+
+    - name: Show list of extracted files
+      debug:
+        var: unarchived_files.stdout_lines

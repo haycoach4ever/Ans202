@@ -1,0 +1,12 @@
+---
+- name: Stop and disable httpd
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Stop and disable httpd service
+      systemd:
+        name: httpd
+        state: stopped
+        enabled: false
+

@@ -1,0 +1,14 @@
+---
+- name: Use Ansible facts to show and evaluate memory
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Show memory in MB using a fact
+      debug:
+        msg: "This system has {{ ansible_memtotal_mb }} MB of RAM"
+
+    - name: Only run if the system has more than 1500 MB of RAM
+      debug:
+        msg: "Enough memory available"
+      when: ansible_memtotal_mb > 1500

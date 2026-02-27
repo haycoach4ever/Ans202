@@ -1,0 +1,14 @@
+---
+- name: Display message based on hostname contents
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Get hostname
+      command: hostname
+      register: hostname_cmd
+
+    - name: Only run this if hostname includes 'rhel'
+      debug:
+        msg: "This host has rhel in its name"
+      when: "'rhel' in hostname_cmd.stdout"

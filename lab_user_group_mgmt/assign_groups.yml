@@ -1,0 +1,17 @@
+---
+- name: Assign users to secondary groups
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Add bart to nuclearplant group
+      user:
+        name: bart
+        groups: nuclearplant
+        append: yes
+
+    - name: Add milhouse to springfield group
+      user:
+        name: milhouse
+        groups: springfield
+        append: yes

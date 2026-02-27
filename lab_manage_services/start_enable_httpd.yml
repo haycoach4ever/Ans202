@@ -1,0 +1,11 @@
+---
+- name: Start and enable httpd
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Start and enable httpd service
+      systemd:
+        name: httpd
+        state: started
+        enabled: true

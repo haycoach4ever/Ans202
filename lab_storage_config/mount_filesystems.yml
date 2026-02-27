@@ -1,0 +1,29 @@
+---
+- name: Mount new filesystems
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Create mount directory for /mnt/data1
+      file:
+        path: /mnt/data1
+        state: directory
+
+    - name: Mount /dev/sdb1 to /mnt/data1
+      mount:
+        path: /mnt/data1
+        src: /dev/sdb1
+        fstype: xfs
+        state: mounted
+
+    - name: Create mount directory for /mnt/data2
+      file:
+        path: /mnt/data2
+        state: directory
+
+    - name: Mount /dev/sdc1 to /mnt/data2
+      mount:
+        path: /mnt/data2
+        src: /dev/sdc1
+        fstype: xfs
+        state: mounted

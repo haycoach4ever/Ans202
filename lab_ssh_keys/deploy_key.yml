@@ -1,0 +1,11 @@
+---
+- name: Deploy SSH public key for bart
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Ensure bart's authorized_keys file contains the public key
+      authorized_key:
+        user: bart
+        state: present
+        key: "{{ lookup('file', 'bart_id_rsa.pub') }}"

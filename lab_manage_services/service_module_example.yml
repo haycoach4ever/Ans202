@@ -1,0 +1,10 @@
+---
+- name: Using the older service module (not preferred)
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Stop httpd with service module
+      service:
+        name: httpd
+        state: stopped

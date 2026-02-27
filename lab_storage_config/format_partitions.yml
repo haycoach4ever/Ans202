@@ -1,0 +1,15 @@
+---
+- name: Format new partitions with XFS
+  hosts: rhel_nodes
+  become: yes
+
+  tasks:
+    - name: Format /dev/sdb1 with XFS
+      filesystem:
+        fstype: xfs
+        dev: /dev/sdb1
+
+    - name: Format /dev/sdc1 with XFS
+      filesystem:
+        fstype: xfs
+        dev: /dev/sdc1
